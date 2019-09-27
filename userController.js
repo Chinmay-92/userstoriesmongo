@@ -18,17 +18,39 @@ exports.index = function (req, res) {
 };
 // Handle create Usermodel actions
 exports.new = function (req, res) {
-    var usermodel = new Usermodel();
-    usermodel.name = req.body.name ? req.body.name : usermodel.name;
-// save the Usermodel and check for errors
-    usermodel.save(function (err) {
-        // if (err)
-        //     res.json(err);
-    res.json({
-            message: 'New Usermodel created!',
-            data: usermodel
+
+    Usermodel.find({name:req.body.name}, function(err, data){
+            if(err){
+                console.log(err);
+                return;
+            }
+
+            if(data.length != 0) {
+                console.log("Username already exists")
+                res.json({
+                        message: 'Username already exists!',
+                        username: data[0].name,                        
+                        _id: data[0]._id
+                    });
+                return;
+            }
+
+            else {
+
+                var usermodel = new Usermodel();
+                usermodel.name = req.body.name ? req.body.name : usermodel.name;
+            // save the Usermodel and check for errors
+                usermodel.save(function (err) {
+                    // if (err)
+                    //     res.json(err);
+                res.json({
+                        message: 'New User created!',
+                        username: usermodel.name,
+                        _id: usermodel._id
+                    });
+                });
+            }
         });
-    });
 };
 // Handle view Usermodel info
 exports.view = function (req, res) {
@@ -36,7 +58,7 @@ exports.view = function (req, res) {
         if (err)
             res.send(err);
         res.json({
-            message: 'Usermodel details',
+            message: 'User details',
             data: usermodel
         });
     });

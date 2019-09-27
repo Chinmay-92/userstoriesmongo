@@ -129,8 +129,10 @@ exports.view = function (req, res) {
                     });            
                 }else
                 res.json({
-                        message: 'Exercisemodel details',
-                        data: exerciseModels
+                        message: 'Exercise logs',
+                        user:user,
+                        exercies: exerciseModels,
+                        count: exerciseModels.length
                     });
                 });
         })
