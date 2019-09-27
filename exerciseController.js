@@ -19,10 +19,10 @@ exports.index = function (req, res) {
     });
 };
 
-exports.getExerciseByUserId = function(id, res) {
-        console.log("searching exercises for "+id);
+exports.getExerciseByUserId = function(user, req, res) {
+        console.log("searching exercises for "+user._id);
         ExerciseUserModel.find({
-                    user_id: id,
+                    user_id: user._id,
             }, function(err, data){
             if(err){
                 console.log(err);
@@ -34,7 +34,29 @@ exports.getExerciseByUserId = function(id, res) {
                 return;
             }
             console.log("exercies found: ",data)
-            res.data = data;
+            array = data;
+            let exercisemodel = new Exercisemodel();
+            array.indexOf(req.body.description) === -1 ? array.push(req.body.description) : res.status(400).send({message: 'Unable to create exercise, duplicate entry'});
+            exercisemodel.user_id = req.body.user_id;
+            exercisemodel.description = req.body.description;
+            exercisemodel.duration = req.body.duration; 
+            if (req.body.date !== 'undefined')
+                exercisemodel.date = req.body.date;
+
+            exercisemodel.save(function (err,exercise) {
+                if (err)
+                    res.json(err);
+
+                ExerciseUserModel.create({
+                                    exercise_id: exercise.id,
+                                    user_id: req.body.user_id
+                                })
+                res.json({
+                    message: "New Exercise created for the user "+user.name+"!",
+                    data: exercisemodel
+                });
+            });
+
             //return data;
         })
 }
@@ -46,62 +68,74 @@ exports.new = function (req, res) {
 
             let user = userModel;
             console.log(user);
-            let exercisemodel = new Exercisemodel();
             let array;
-            array = exports.getExerciseByUserId(user._id, function(err, data) {
-                array = data;
-                console.log("inside this"+array);
-                array.indexOf(req.body.description) === -1 ? array.push(req.body.description) : res.status(400).send({message: 'Unable to create exercise, duplicate entry'});
-                exercisemodel.user_id = req.body.user_id;
-                exercisemodel.description = req.body.description;
-                exercisemodel.duration = req.body.duration; 
-                if (req.body.date !== 'undefined')
-                    exercisemodel.date = req.body.date;
-
-                exercisemodel.save(function (err,exercise) {
-                    if (err)
-                        res.json(err);
-
-                    ExerciseUserModel.create({
-                                        exercise_id: exercise.id,
-                                        user_id: req.body.user_id
-                                    })
-                    res.json({
-                        message: "New Exercise created for the user "+user.name+"!",
-                        data: exercisemodel
-                    });
+            if(user == null)
+            {
+                res.json({
+                    status: "error",
+                    message: "UserId is invalid",
                 });
-        })
+                return;
+            }
+            array = exports.getExerciseByUserId(user, req, res);                
         });
 
 }
 // Handle view Exercisemodel info
 exports.view = function (req, res) {
+
+    Usermodel.findById(req.params.user_id, function(err,userModel) {
+            if (err)
+                    res.json(err);
+
+            let user = userModel;
+            console.log(user);
+            let array;
+            if(user == null)
+            {
+                res.json({
+                    status: "error",
+                    message: "UserId is invalid",
+                });
+                return;
+            }
+
         ExerciseUserModel.find({
-                where: {
                     user_id: req.params.user_id,
-                },
             }, function(err, data){
             if(err){
                 console.log(err);
                 res.json(err);
+                return;
             }
 
             if(data.length == 0) {
-                console.log("No record found")
+                console.log("No exercies log found")
                     res.json({
-                        message: 'No record found',
+                        message: 'No exercies log found',
                         data: []
-                    });            }else
-            Exercisemodel.findById(data[0].exercise_id, function (err, exerciseModels) {
-                    if (err)
-                        res.send(err);
+                    });            
+                }else
+            Exercisemodel.find({exercise_id:data._id}, function (err, exerciseModels) {
+                   if(err){
+                        console.log(err);
+                        res.json(err);
+                    }   
+                    if(exerciseModels.length == 0) {
+                    console.log("Exercisemodel record found")
                     res.json({
+                        message: 'Exercisemodel record found',
+                        data: []
+                    });            
+                }else
+                res.json({
                         message: 'Exercisemodel details',
                         data: exerciseModels
                     });
                 });
         })
+
+    });
         
 };
 // Handle update Exercisemodel info
