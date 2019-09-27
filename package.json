@@ -1,0 +1,22 @@
+{
+  "name": "userstories",
+  "version": "1.0.0",
+  "description": "node,mongo backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chinmay-92/userstoriesmongo.git"
+  },
+  "author": "Chinmay",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chinmay-92/userstoriesmongo/issues"
+  },
+  "homepage": "https://github.com/Chinmay-92/userstoriesmongo#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
