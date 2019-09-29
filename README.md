@@ -1,4 +1,7 @@
-This project has 2 modules 1.backend ( node+mongo ) 2.client (react) 
+This project has 2 modules 
+    1.backend ( node+mongo ) 2.client (react) 
+
+prerequisites: mongodb, node, googlechrome CORS plugin
 
 1. go to /backend folder
     npm install
