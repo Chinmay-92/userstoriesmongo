@@ -6,16 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Chinmay-92/userstoriesmongo.git"
-  },
   "author": "Chinmay",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Chinmay-92/userstoriesmongo/issues"
-  },
-  "homepage": "https://github.com/Chinmay-92/userstoriesmongo#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
