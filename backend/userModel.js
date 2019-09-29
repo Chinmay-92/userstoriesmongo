@@ -3,27 +3,19 @@ var mongoose = require('mongoose');
 // Setup schema
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
-
-var exerciseSchema = mongoose.Schema({
-	user_id: {
-		type: ObjectId
-	},
-    description: {
+var userSchema = mongoose.Schema({
+	username: {
         type: String,
         required: true
     },
-    duration: {
-        type: String,
-        required: true
-    },
-    date: {
+    create_date: {
         type: Date,
         default: Date.now
     }
 });
 // Export user model
-var exercise = module.exports = mongoose.model('exercise', exerciseSchema);
+var Usermodel = module.exports = mongoose.model('user', userSchema);
 
 module.exports.get = function (callback, limit) {
-    exercise.find(callback).limit(limit);
+    Usermodel.find(callback).limit(limit);
 }

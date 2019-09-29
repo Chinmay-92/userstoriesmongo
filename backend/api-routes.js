@@ -19,6 +19,11 @@ router.route('/users')
     .get(userController.index)
     .post(userController.new);
 
+router.route('/exercise/users')
+    .get(userController.index)
+
+router.route('/exercise/new-user').post(userController.new);
+
 router.route('/users/:user_id')
     .get(userController.view)
     .patch(userController.update)
@@ -31,6 +36,8 @@ router.route('/exercises')
 router.route('/exercise/add').post(exerciseController.new);
 
 router.route('/exercise/log/:user_id').get(exerciseController.view);
+router.route('/exercise/log/:user_id/:from/:to').get(exerciseController.view);
+router.route('/exercise/log/:user_id/:limit').get(exerciseController.view);
 
 router.route('/exerciseusers')
     .get(exerciseUserController.index)

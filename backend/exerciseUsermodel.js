@@ -4,7 +4,7 @@ var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 // Setup schema
 var exerciseuserSchema = mongoose.Schema({
-    event_id: {
+    exercise_id: {
         type: ObjectId
     },
     user_id: {

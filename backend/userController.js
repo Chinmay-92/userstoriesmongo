@@ -18,18 +18,26 @@ exports.index = function (req, res) {
 };
 // Handle create Usermodel actions
 exports.new = function (req, res) {
+    if(!req.body.username||req.body.username==="") {
+        return res.status(400).send({
+            message: "User name can not be empty"
+        });
+    }
 
-    Usermodel.find({name:req.body.name}, function(err, data){
+    Usermodel.find({name:req.body.username}, function(err, data){
             if(err){
-                console.log(err);
+                res.json({
+                    success: false,
+                    message: err
+                });
                 return;
             }
 
             if(data.length != 0) {
-                console.log("Username already exists")
                 res.json({
+                        success: false,
                         message: 'Username already exists!',
-                        username: data[0].name,                        
+                        username: data[0].username,                        
                         _id: data[0]._id
                     });
                 return;
@@ -38,15 +46,20 @@ exports.new = function (req, res) {
             else {
 
                 var usermodel = new Usermodel();
-                usermodel.name = req.body.name ? req.body.name : usermodel.name;
+                usermodel.username = req.body.username ? req.body.username : usermodel.username;
             // save the Usermodel and check for errors
-                usermodel.save(function (err) {
-                    // if (err)
-                    //     res.json(err);
+                usermodel.save(function (err,userObj) {
+                if (err){
+                    res.json(err);
+                    return;
+                }
+                
                 res.json({
+                        success: true,
                         message: 'New User created!',
-                        username: usermodel.name,
-                        _id: usermodel._id
+                        username: usermodel.username,
+                        _id: usermodel._id,
+                        data: userObj
                     });
                 });
             }
@@ -66,7 +79,7 @@ exports.view = function (req, res) {
 // Handle update Usermodel info
 exports.update = function (req, res) {
 
-    if(!req.body.name) {
+    if(!req.body.username) {
         return res.status(400).send({
             message: "User name can not be empty"
         });
@@ -74,7 +87,7 @@ exports.update = function (req, res) {
 
     // Find note and update it with the request body
     Usermodel.findByIdAndUpdate(req.params.user_id, {
-        name: req.body.name,
+        name: req.body.username,
     }, {new: true})
     .then(note => {
         if(!note) {
@@ -108,7 +121,7 @@ exports.delete = function (req, res) {
         }
         res.send({message: "user deleted successfully!"});
     }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+        if(err.kind === 'ObjectId' || err.username === 'NotFound') {
             return res.status(404).send({
                 message: "User not found with id " + req.params.user_id
             });                
